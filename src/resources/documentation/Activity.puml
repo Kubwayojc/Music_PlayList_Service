@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Handler{
+    {method}handleRequest(I input, Context context)
+}
+
+class AddSongToPlaylistActivity {
+-{field}Logger log
+-{field}PlaylistDao playlistDao
+-{field}AlbumTrackDao albumTrackDao
+}
+
+
+class CreatePlaylistActivity {
+-{field}Logger log
+-{field}PlaylistDao playlistDao
+}
+
+class GetPlaylistActivity {
+-{field}Logger log
+-{field}PlaylistDao playlistDao
+}
+
+class GetPlaylistSongsActivity {
+-{field}Logger log
+-{field}PlaylistDao playlistDao
+}
+
+
+class UpdatePlaylistActivity {
+-{field}Logger log
+-{field}PlaylistDao playlistDao
+}
+
+
+
+AddSongToPlaylistActivity ..> Handler
+CreatePlaylistActivity  ..> Handler
+GetPlaylistActivity ..> Handler
+GetPlaylistSongsActivity ..> Handler
+UpdatePlaylistActivity ..> Handler
+
+
+
+
+@enduml
