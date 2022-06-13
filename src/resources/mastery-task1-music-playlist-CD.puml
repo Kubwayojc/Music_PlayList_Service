@@ -2,42 +2,77 @@
 'https://plantuml.com/class-diagram
 
 interface Handler{
-    {method}handleRequest(I input, Context context)
+    +handleRequest(I input, Context context)
 }
 
 class AddSongToPlaylistActivity {
--{field}Logger log
--{field}PlaylistDao playlistDao
--{field}AlbumTrackDao albumTrackDao
+-Logger log
+-PlaylistDao playlistDao
+-AlbumTrackDao albumTrackDao
 }
 
 
 class CreatePlaylistActivity {
--{field}Logger log
--{field}PlaylistDao playlistDao
+-Logger log
+-PlaylistDao playlistDao
 }
 
 class GetPlaylistActivity {
--{field}Logger log
--{field}PlaylistDao playlistDao
+-Logger log
+-PlaylistDao playlistDao
 }
 
 class GetPlaylistSongsActivity {
--{field}Logger log
--{field}PlaylistDao playlistDao
+-Logger log
+-PlaylistDao playlistDao
 }
 
 
 class UpdatePlaylistActivity {
--{field}Logger log
--{field}PlaylistDao playlistDao
+-Logger log
+-PlaylistDao playlistDao
 }
 
-AddSongToPlaylistActivity ..|> Handler
-CreatePlaylistActivity  ..|> Handler
-GetPlaylistActivity ..|> Handler
-GetPlaylistSongsActivity ..|> Handler
-UpdatePlaylistActivity ..|> Handler
+class AlbumTrackDao {
+-DynamoDBMapper dynamoDbMapper
+}
+
+class PlaylistDao {
+-DynamoDBMapper dynamoDbMapper
++Playlist getPlaylist(String id)
+}
+
+class AlbumTrack {
+@DynamoDBHashKey asin: String
+@DynamoDBRangeKey trackNumber : Integer
+albumName : String
+songTitle: String
+}
+
+class Playlist {
+@DynamoDBHashKey id: String
+name : String
+customerId: String
+}
+
+class AlbumTrackNotFoundException {
+-DynamoDBMapper dynamoDbMapper
++Playlist getPlaylist(String id)
+}
+
+
+
+
+
+
+
+
+
+Handler <|.. AddSongToPlaylistActivity
+Handler <|.. CreatePlaylistActivity
+Handler <|.. GetPlaylistActivity
+Handler <|.. GetPlaylistSongsActivity
+Handler <|.. UpdatePlaylistActivity
 
 
 
