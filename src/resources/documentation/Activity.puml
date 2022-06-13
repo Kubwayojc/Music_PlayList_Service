@@ -33,13 +33,11 @@ class UpdatePlaylistActivity {
 -{field}PlaylistDao playlistDao
 }
 
-
-
-AddSongToPlaylistActivity ..> Handler
-CreatePlaylistActivity  ..> Handler
-GetPlaylistActivity ..> Handler
-GetPlaylistSongsActivity ..> Handler
-UpdatePlaylistActivity ..> Handler
+AddSongToPlaylistActivity ..|> Handler
+CreatePlaylistActivity  ..|> Handler
+GetPlaylistActivity ..|> Handler
+GetPlaylistSongsActivity ..|> Handler
+UpdatePlaylistActivity ..|> Handler
 
 
 
