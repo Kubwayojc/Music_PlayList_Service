@@ -9,37 +9,43 @@ class AddSongToPlaylistActivity {
 -Logger log
 -PlaylistDao playlistDao
 -AlbumTrackDao albumTrackDao
++handleRequest(final AddSongToPlaylistRequest addSongToPlaylistRequest, Context context) : AddSongToPlaylistResult
 }
 
 
 class CreatePlaylistActivity {
 -Logger log
 -PlaylistDao playlistDao
++handleRequest(final CreatePlaylistRequest createPlaylistRequest, Context context) : CreatePlaylistResult
 }
 
 class GetPlaylistActivity {
 -Logger log
 -PlaylistDao playlistDao
++handleRequest(final GetPlaylistRequest getPlaylistRequest, Context context) : GetPlaylistResult
 }
 
 class GetPlaylistSongsActivity {
 -Logger log
 -PlaylistDao playlistDao
++handleRequest (final GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) : GetPlaylistSongsResult
 }
+
 
 
 class UpdatePlaylistActivity {
 -Logger log
 -PlaylistDao playlistDao
++handleRequest (final UpdatePlaylistRequest updatePlaylistRequest, Context context) : UpdatePlaylistResult
 }
 
 class AlbumTrackDao {
--DynamoDBMapper dynamoDbMapper
+-dynamoDbMapper : DynamoDBMapper
 }
 
 class PlaylistDao {
--DynamoDBMapper dynamoDbMapper
-+Playlist getPlaylist(String id)
+-dynamoDbMapper : DynamoDBMapper
++getPlaylist(String id) : Playlist
 }
 
 class AlbumTrack {
@@ -53,18 +59,42 @@ class Playlist {
 @DynamoDBHashKey id: String
 name : String
 customerId: String
+songCount : Integer
+tags : Set<String>
+songList : List<AlbumTrack>
 }
 
 class AlbumTrackNotFoundException {
--DynamoDBMapper dynamoDbMapper
-+Playlist getPlaylist(String id)
+-long serialVersionUID
+
 }
 
+class InvalidAttributeValueException {
+-{static} long serialVersionUID
+
+}
+
+class PlaylistNotFoundException {
+-{static} long serialVersionUID
+}
+
+Playlist *-- AlbumTrack
+
+CreatePlaylistActivity *-- PlaylistDao
+CreatePlaylistActivity *-- Logger
+
+GetPlaylistActivity *-- PlaylistDao
+GetPlaylistActivity *-- Logger
+
+GetPlaylistSongsActivity *-- PlaylistDao
+GetPlaylistSongsActivity *-- Logger
 
 
+UpdatePlaylistActivity *-- PlaylistDao
+UpdatePlaylistActivity *-- Logger
 
-
-
+AddSongToPlaylistActivity *-- AlbumTrackDao
+AddSongToPlaylistActivity *-- PlaylistDao
 
 
 
@@ -73,7 +103,6 @@ Handler <|.. CreatePlaylistActivity
 Handler <|.. GetPlaylistActivity
 Handler <|.. GetPlaylistSongsActivity
 Handler <|.. UpdatePlaylistActivity
-
 
 
 
