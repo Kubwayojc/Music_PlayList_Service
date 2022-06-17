@@ -69,7 +69,17 @@ class AlbumTrackNotFoundException {
 
 }
 
-class InvalidAttributeValueException {
+class InvalidAttributeValueException implements InvalidAttributeException  {
+-{static} long serialVersionUID
+
+}
+
+class InvalidAttributeChangeException implements InvalidAttributeException{
+-{static} long serialVersionUID
+
+}
+
+class InvalidAttributeException implements RuntimeException  {
 -{static} long serialVersionUID
 
 }
@@ -96,7 +106,10 @@ UpdatePlaylistActivity *-- Logger
 AddSongToPlaylistActivity *-- AlbumTrackDao
 AddSongToPlaylistActivity *-- PlaylistDao
 
+RuntimeException <|-- InvalidAttributeException
 
+InvalidAttributeException <|-- InvalidAttributeValueException
+InvalidAttributeException <|-- InvalidAttributeChangeException
 
 Handler <|.. AddSongToPlaylistActivity
 Handler <|.. CreatePlaylistActivity

@@ -54,18 +54,17 @@ public class CreatePlaylistActivity implements RequestHandler<CreatePlaylistRequ
         log.info("Received CreatePlaylistRequest {}", createPlaylistRequest);
         Set<String> tags = null;
         ModelConverter modelConverter = new ModelConverter();
-        if(createPlaylistRequest.getTags() != null) {
+        if(createPlaylistRequest.getTags() != null && createPlaylistRequest.getTags().isEmpty()) {
             tags = new HashSet<>(createPlaylistRequest.getTags());
         }
 
-        if(createPlaylistRequest.getTags().size() == 0) {
-            createPlaylistRequest.setTags(null);
+        if (!MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getName())) {
+            throw new InvalidAttributeValueException("Customer Name is Invalid. ");
         }
 
-        if (!MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getName()) ||
-                MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getCustomerId())) {
+        if(!MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getCustomerId())) {
 
-            throw new InvalidAttributeValueException("Customer Id or Name is Invalid. ");
+            throw new InvalidAttributeValueException("Customer Id is Invalid. ");
         }
 
         Playlist playlist = new Playlist();
@@ -79,7 +78,7 @@ public class CreatePlaylistActivity implements RequestHandler<CreatePlaylistRequ
         playlistDao.savePlaylist(playlist);
 
         return CreatePlaylistResult.builder()
-                .withPlaylist(new PlaylistModel())
+                .withPlaylist(new ModelConverter().toPlaylistModel(playlist))
                 .build();
     }
 }
