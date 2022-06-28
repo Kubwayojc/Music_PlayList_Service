@@ -3,6 +3,7 @@ package com.amazon.ata.music.playlist.service.activity;
 import com.amazon.ata.music.playlist.service.converters.ModelConverter;
 import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
 import com.amazon.ata.music.playlist.service.exceptions.PlaylistNotFoundException;
+import com.amazon.ata.music.playlist.service.models.SongOrder;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
 import com.amazon.ata.music.playlist.service.models.SongModel;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Implementation of the GetPlaylistSongsActivity for the MusicPlaylistService's GetPlaylistSongs API.
@@ -25,6 +27,8 @@ import java.util.LinkedList;
 public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongsRequest, GetPlaylistSongsResult> {
     private final Logger log = LogManager.getLogger();
     private final PlaylistDao playlistDao;
+
+    ModelConverter modelConverter = new ModelConverter();
     //ModelConverter modelConverter;
 
 
@@ -51,17 +55,30 @@ public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongs
     @Override
     public GetPlaylistSongsResult handleRequest(final GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) {
         log.info("Received GetPlaylistSongsRequest {}", getPlaylistSongsRequest);
-        LinkedList<SongModel> songModelList;
-        String requestId = getPlaylistSongsRequest.getId();
+
         Playlist playlist;
+        List<SongModel> songModelList;
         ModelConverter modelConverter = new ModelConverter();
+//        String requestId = getPlaylistSongsRequest.getId();
+//        Playlist playlist;
+//        ModelConverter modelConverter = new ModelConverter();
 
         try {
-            playlist = playlistDao.getPlaylist(requestId);
+            playlist = playlistDao.getPlaylist(getPlaylistSongsRequest.getId());
         } catch (PlaylistNotFoundException e) {
             throw new PlaylistNotFoundException(e.getMessage());
         }
 
+        SongOrder songOrder = getPlaylistSongsRequest.getOrder();
+        if(songOrder == null) {
+            songOrder = SongOrder.DEFAULT;
+        }
+
+        if(songOrder == SongOrder.SHUFFLED) {
+            Collections.shuffle(playlist.getSongList());
+        } else if(songOrder == SongOrder.REVERSED) {
+            Collections.reverse(playlist.getSongList());
+        }
 
 
         songModelList = modelConverter.toSongModelList(playlist.getSongList());

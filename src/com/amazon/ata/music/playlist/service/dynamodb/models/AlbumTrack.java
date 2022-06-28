@@ -30,8 +30,8 @@ public class AlbumTrack {
         return trackNumber;
     }
 
-    public void setTrackNumber(int trackNumber) {
-        this.trackNumber = trackNumber;
+    public void setTrackNumber(int track_number) {
+        this.trackNumber = track_number;
     }
 
     @DynamoDBAttribute(attributeName = "album_name")
@@ -39,8 +39,9 @@ public class AlbumTrack {
         return albumName;
     }
 
-    public void setAlbumName(String albumName) {
-        this.albumName = albumName;
+    public void setAlbumName(String album_name) {
+        this.albumName = album_name;
+
     }
 
     @DynamoDBAttribute(attributeName = "song_title")
