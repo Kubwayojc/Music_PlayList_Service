@@ -1,5 +1,8 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.converters.ModelConverter;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.exceptions.PlaylistNotFoundException;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
 import com.amazon.ata.music.playlist.service.models.SongModel;
@@ -12,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Implementation of the GetPlaylistSongsActivity for the MusicPlaylistService's GetPlaylistSongs API.
@@ -21,6 +25,8 @@ import java.util.Collections;
 public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongsRequest, GetPlaylistSongsResult> {
     private final Logger log = LogManager.getLogger();
     private final PlaylistDao playlistDao;
+    //ModelConverter modelConverter;
+
 
     /**
      * Instantiates a new GetPlaylistSongsActivity object.
@@ -45,9 +51,23 @@ public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongs
     @Override
     public GetPlaylistSongsResult handleRequest(final GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) {
         log.info("Received GetPlaylistSongsRequest {}", getPlaylistSongsRequest);
+        LinkedList<SongModel> songModelList;
+        String requestId = getPlaylistSongsRequest.getId();
+        Playlist playlist;
+        ModelConverter modelConverter = new ModelConverter();
+
+        try {
+            playlist = playlistDao.getPlaylist(requestId);
+        } catch (PlaylistNotFoundException e) {
+            throw new PlaylistNotFoundException(e.getMessage());
+        }
+
+
+
+        songModelList = modelConverter.toSongModelList(playlist.getSongList());
 
         return GetPlaylistSongsResult.builder()
-                .withSongList(Collections.singletonList(new SongModel()))
+                .withSongList(songModelList)
                 .build();
     }
 }
